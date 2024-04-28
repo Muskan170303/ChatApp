@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from 'react'
 import { AuthContext } from '../Context/AuthContext'
 import { ChatContext } from '../Context/ChatContext';
 import Arrow from '../images/arrowdown.png'
+import Img from './Img';
 
 function Message({message}) {
   const {currUser}=useContext(AuthContext);
@@ -20,8 +21,7 @@ function Message({message}) {
         {/* <span>{message.data?.toLocalTimeString("en-US")}</span> */}
       </div>
       <div className="messageContent">
-        <p>{message.text}<img className='arrow' src={Arrow} alt="" /></p>
-        {message.img && <img src={message.img} alt="" />}
+        <div>{message.img?<Img mess={message} />:message.text }<img className='arrow' src={Arrow} alt="" /></div>
       </div>
     </div>
   )

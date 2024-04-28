@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../Context/AuthContext';
 import { ChatContext } from '../Context/ChatContext';
-import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 function Chats() {
@@ -19,18 +19,24 @@ function Chats() {
     currUser.uid && getChats();
   },[currUser.uid]);
 
-  const handleSelect=(u)=>{
-    !chatSelected && setChatSelection(true)
-    dispatch({type:"CHANGE_USER", payload:u})
+  const handleSelect= async (u)=>{
+    !chatSelected && setChatSelection(true) 
+    // console.log(u); 
+    await dispatch({type:"CHANGE_USER", payload:u})
+    // console.log(data.chatId+".unread")
+    ChangeRead(u)
   }
-  // const {data}= useContext(AuthContext);
-  // const ChangeRead= async()=>{
-  //     await setDoc(doc(db,"userChats",currUser.uid),{
-  //         [data.chatId+".unread"]:0
-  //       })
-  //       console.log(0)
-  //     }
-  // ChangeRead();
+  // console.log(data.chatId)
+  const ChangeRead= async(u)=>{
+    let chatId = currUser.uid>u.uid
+    ?currUser.uid+u.uid
+    :u.uid+currUser.uid
+      await updateDoc(doc(db,"userChats",currUser.uid),{
+          [chatId+".unread"]:0 
+      })
+    // console.log(chatId+".unread")
+  }
+  
 
   return (
     <div className='chats'>

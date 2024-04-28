@@ -35,7 +35,7 @@ function Input() {
               id:uuid(),
               text,
               senderId:currUser.uid,
-              date:Timestamp.now(),
+              date:new Date().getTime(),
               img:downloadURL
             })
           })
@@ -61,7 +61,7 @@ function Input() {
       [data.chatId+".date"]:serverTimestamp(),
       [data.chatId+".unread"]:increment(1)
     })
-    console.log("increament")
+    // console.log("increament")
 
     setText("");
     setImg(null);

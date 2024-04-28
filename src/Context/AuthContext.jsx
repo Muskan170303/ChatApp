@@ -7,7 +7,7 @@ export const AuthContext=createContext();
 export const AuthContextProvider=({children})=>{
     const [currUser,setCurrUser]= useState({})
     const [chatSelected, setChatSelection]= useState(false);
-
+    const [proSelected,setproSelected]=useState(false);
     useEffect(()=>{
         const unSub=onAuthStateChanged(auth,(user)=>{
             setCurrUser(user);
@@ -16,7 +16,7 @@ export const AuthContextProvider=({children})=>{
     },[]);
 
     return(
-        <AuthContext.Provider value={{currUser, chatSelected, setChatSelection}}>
+        <AuthContext.Provider value={{currUser, chatSelected, setChatSelection,proSelected,setproSelected}}>
             {children}
         </AuthContext.Provider>
     )

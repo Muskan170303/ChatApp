@@ -10,6 +10,7 @@ function Register() {
 
   const navigate=useNavigate();
   const [err,setErr] = useState(false);
+  const [currfile,setcurrfile]=useState(document.getElementById('file')?.files);
 
   const handleSubmit = async(e)=>{
     e.preventDefault();
@@ -64,6 +65,7 @@ function Register() {
                     <img src={AddAvatar} alt="" />
                     <span>Add an Avatar</span>
                 </label>
+                {/* {<div id='upload'>No file uploaded right now!!</div>} */}
                 <button type='submit'>Sign up</button>
             </form>
             {err && <span className='err'>Something went wrong!!</span>}
