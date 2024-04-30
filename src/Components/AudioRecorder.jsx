@@ -1,6 +1,7 @@
 // AudioRecorder.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import recfile from './AudioRecorderProcess.jsx';
+
 function AudioRecorder() {
   const recorderNode = useRef(null);
   const audioContext = useRef(null);
@@ -58,7 +59,7 @@ function AudioRecorder() {
       <div>
         {recordedData.length > 0 && (
           <audio controls>
-            <source src={URL.createObjectURL(new Blob([new Float32Array(recordedData)]))} type="audio/wav" />
+            <source src={URL.createObjectURL(new Blob([new Float32Array(recordedData)]))} type="audio" />
           </audio>
         )}
       </div>

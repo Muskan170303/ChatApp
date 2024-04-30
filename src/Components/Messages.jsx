@@ -36,7 +36,6 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import Message from './Message';
-import AudioMessage from './AudioMessage'; // Import the AudioMessage component
 import { ChatContext } from '../Context/ChatContext';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -64,11 +63,9 @@ function Messages() {
         <div className='sayhello'><img src={sayhello} alt="hello" /></div>
       ) : (
         messages.map((message) =>
-          message.audio ? ( // Check if the message contains audio data
-            <AudioMessage key={message.id} message={message} />
-          ) : (
+          
             <Message key={message.id} message={message} />
-          )
+          
         )
       )}
     </div>

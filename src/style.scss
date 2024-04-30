@@ -558,15 +558,7 @@ $alt:#ddddf7;
     cursor: pointer;
     z-index: 1; /* Ensure the button stays above the image */
   }
+
   
-  .messageContent {
-    position: relative;
-  }
   
-  .audioContainer {
-    position: absolute;
-    top: 50%;
-    right: 10px; /* Adjust as needed */
-    transform: translateY(-50%);
-  }
   

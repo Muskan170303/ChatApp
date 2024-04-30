@@ -5,7 +5,6 @@ function Img({mess}) {
     <>
       <p><img src={mess.img} alt="" /></p>
       <p>{mess.text}</p>
-      <p>{mess.audio}</p>
     </>
   )
 }

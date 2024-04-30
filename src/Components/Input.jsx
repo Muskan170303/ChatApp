@@ -172,15 +172,18 @@ function Input() {
     }
 
     if (img) {
-      const storageRef = ref(storage, uuid());
-      await uploadBytes(storageRef, img).then((snapshot) => getDownloadURL(snapshot.ref)).then((downloadURL) => {
+      const imgStorageRef = ref(storage, uuid()); // Generate a unique storage reference
+      await uploadBytes(imgStorageRef, img).then((snapshot) => getDownloadURL(snapshot.ref)).then((downloadURL) => {
         messageData.img = downloadURL;
       });
     }
 
     if (recordings.length > 0) {
-      // Assuming only the first recording is used
-      messageData.audio = recordings[0];
+      const audioBlob = await fetch(recordings[0]).then((res) => res.blob()); // Fetch the audio blob
+      const audioStorageRef = ref(storage, uuid()); // Generate a unique storage reference for audio
+      await uploadBytes(audioStorageRef, audioBlob).then((snapshot) => getDownloadURL(snapshot.ref)).then((downloadURL) => {
+        messageData.audio = downloadURL;
+      });
     }
 
     await updateDoc(doc(db, 'chats', data.chatId), { messages: arrayUnion(messageData) });
