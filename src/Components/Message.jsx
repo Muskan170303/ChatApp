@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../Context/AuthContext'
 import { ChatContext } from '../Context/ChatContext';
 import Arrow from '../images/arrowdown.png'
 import Img from './Img';
+import ImageModal from './ImageModal';
 
 function Message({message}) {
   const {currUser}=useContext(AuthContext);
@@ -16,6 +17,14 @@ function Message({message}) {
     ref.current?.scrollIntoView({behavior:"smooth"})
   },[message])
 
+  const [selected,setselected]=useState(null);
+  const openModal = (info) => setselected(info); // Function to open modal
+  const closeModal = () => setselected(null); // Function to close modal
+
+  const handleclick=()=>{
+    openModal(message);
+  }
+
   return (
     <div ref={ref} className={`message ${message.senderId===currUser.uid && "owner"}`}>
       <div className="messageInfo">
@@ -25,11 +34,12 @@ function Message({message}) {
         {/* <span>{message.data?.toLocalTimeString("en-US")}</span> */}
       </div>
       <div className="messageContent">
-        <div>{message.img ? <Img mess={message} /> : message.audio ? <audio src={message.audio} controls onClick={handlePlay}/> : message.text }<img className='arrow' src={Arrow} alt="" /></div>
+        <div>{message.img ? <Img mess={message} handleclick={handleclick} /> : message.audio ? <audio src={message.audio} controls onClick={handlePlay}/> : message.text }<img className='arrow' src={Arrow} alt="" /></div>
           {/* <div className="audio-message">
         <audio src={message.audio} controls onClick={handlePlay}/>
         </div> */}
       </div>
+      {selected && <ImageModal info={selected}  onClose={closeModal} />}
     </div>
   )
 }
