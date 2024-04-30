@@ -21,7 +21,7 @@ function Message({message}) {
         {/* <span>{message.data?.toLocalTimeString("en-US")}</span> */}
       </div>
       <div className="messageContent">
-        <div>{message.img?<Img mess={message} />:message.text }<img className='arrow' src={Arrow} alt="" /></div>
+        <div>{message.img ? <Img mess={message} /> : message.audio ? <Img mess={message}/> : message.text }<img className='arrow' src={Arrow} alt="" /></div>
       </div>
     </div>
   )

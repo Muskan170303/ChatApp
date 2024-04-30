@@ -105,14 +105,14 @@ $alt:#ddddf7;
     justify-content: center;
 
     .container{
-        border: 1px solid white;
-        border-radius: 10px;
-        width: 85vw;
-        height: 90vh;
+        border: 0px solid white;
+        border-radius: 0px;
+        width: 100vw;
+        height: 100vh;
         display: flex;
         overflow: hidden;
         @include tablet{
-            width: 95vw;
+            width: 100vw;
         }
 
         .sidebar{
@@ -239,9 +239,9 @@ $alt:#ddddf7;
                     }
                     .div2{
                         align-items: flex-end;
-                        min-width: 7vw;
+                        min-width: 11vw;
                         span{
-                            font-size: .5em;
+                            font-size: .7em;
                             display: inline-block;
                         }
                         p{
@@ -261,7 +261,7 @@ $alt:#ddddf7;
             background-color: $pri3;
             .welcomecontainer{
                 margin: 1rem;
-                height:84vh;
+                height:95vh;
                 // width: 55vw;
                 @include tablet{
                     width: 90%;
@@ -343,7 +343,8 @@ $alt:#ddddf7;
                             object-fit: cover;
                         }
                         .timestamp{
-                            font-size: .8rem;
+                            font-size: 0.8rem;
+
                         }
                     }
                     .messageContent{
@@ -515,3 +516,46 @@ $alt:#ddddf7;
         }
     }
 }
+/* Example CSS styles for the modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+
+  }
+  
+  .modal-content {
+    position: relative;
+    background-color: #717475;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    
+  }
+  
+  .modal-content img {
+    height: 400px;
+    width: 400px;
+    border-radius: 10px;
+  }
+  
+  .modal-content button {
+    font-size: larger;
+    
+    position: absolute; /* Position the close button absolutely */
+    top: 10px; /* Adjust top positioning */
+    right: 10px; /* Adjust left positioning */
+    background-color: transparent; /* Make background transparent */
+    border: none; /* Remove border */
+    cursor: pointer;
+    z-index: 1; /* Ensure the button stays above the image */
+  }
+  
