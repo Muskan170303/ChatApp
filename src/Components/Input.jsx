@@ -160,6 +160,8 @@ import React, { useContext, useState, useRef } from 'react';
 import Img from '../images/img.png';
 import Attach from '../images/attach.png';
 import Send from '../images/plane.jpeg';
+import Rec from '../images/microphone.png'
+import Rec_red from '../images/rec_red.png'
 import { AuthContext } from '../Context/AuthContext';
 import { ChatContext } from '../Context/ChatContext';
 import { doc, arrayUnion, serverTimestamp, updateDoc } from 'firebase/firestore';
@@ -308,9 +310,12 @@ function Input() {
         <label htmlFor="file">
           <img src={Attach} alt="Attach File" />
         </label>
-        <button onClick={record} disabled={isLoading}>
-          {isRecording ? 'Stop' : 'Record'}
+        <button id="rec" onClick={record} style={{display:"none"}} disabled={isLoading}>
+          
         </button>
+        <label htmlFor="rec">
+        {isRecording ? <img src={Rec_red} alt="" /> : <img src={Rec} alt="" />}
+        </label>
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {recordings.map((url, index) => (
             <li key={index}>

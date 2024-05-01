@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../Context/AuthContext'
 import { ChatContext } from '../Context/ChatContext';
 import Arrow from '../images/arrowdown.png'
 import Img from './Img';
+import ImageModal from './ImageModal';
 
 function Message({message}) {
   const {currUser}=useContext(AuthContext);
@@ -16,6 +17,14 @@ function Message({message}) {
     ref.current?.scrollIntoView({behavior:"smooth"})
   },[message])
 
+  const [selected,setselected]=useState(null);
+  const openModal = (info) => setselected(info); // Function to open modal
+  const closeModal = () => setselected(null); // Function to close modal
+
+  const handleclick=()=>{
+    openModal(message);
+  }
+
   return (
     <div ref={ref} className={`message ${message.senderId===currUser.uid && "owner"}`}>
       <div className="messageInfo">
@@ -27,6 +36,7 @@ function Message({message}) {
       <div className="messageContent">
         <div>{message.img ? <img src={message.img} alt="Attached Image" /> : message.audio ? <audio src={message.audio} controls onClick={handlePlay}/> : message.text }<img className='arrow' src={Arrow} alt="" /></div>
       </div>
+      {selected && <ImageModal info={selected}  onClose={closeModal} />}
     </div>
   )
 }
