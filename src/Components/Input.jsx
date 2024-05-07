@@ -11,10 +11,12 @@ import { v4 as uuid } from 'uuid';
 import { db, storage } from '../firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import vmsg from 'vmsg';
+import CameraCapture from './CameraCapture';
 
 function Input() {
   const [text, setText] = useState('');
-  const [img, setImg] = useState(null);
+  const [imgFile, setImgFile] = useState(null); // State to hold the selected image file
+  const [imgUrl, setImgUrl] = useState(null); // State to hold the image URL for display
 
   const { currUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
@@ -23,6 +25,8 @@ function Input() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordings, setRecordings] = useState([]);
   const recorderRef = useRef(new vmsg.Recorder({ wasmURL: 'https://unpkg.com/vmsg@0.3.0/vmsg.wasm' }));
+  const [showCamera, setShowCamera] = useState(false); // State to manage camera open/close
+  const [cameraCaptureData, setCameraCaptureData] = useState(null); // State to hold captured camera data
 
   const handleKey = (e) => {
     if (e.code === 'Enter') {
@@ -31,7 +35,7 @@ function Input() {
   };
 
   const handleSend = async () => {
-    if (text.trim() === '' && !img && !recordings.length) {
+    if (text.trim() === '' && !imgFile && !recordings.length && !cameraCaptureData) {
       return; // Prevent sending empty messages
     }
 
@@ -45,9 +49,9 @@ function Input() {
       messageData.text = text.trim();
     }
 
-    if (img) {
+    if (imgFile) {
       const imgStorageRef = ref(storage, uuid()); // Generate a unique storage reference
-      await uploadBytes(imgStorageRef, img).then((snapshot) => getDownloadURL(snapshot.ref)).then((downloadURL) => {
+      await uploadBytes(imgStorageRef, imgFile).then((snapshot) => getDownloadURL(snapshot.ref)).then((downloadURL) => {
         messageData.img = downloadURL;
       });
     }
@@ -58,6 +62,10 @@ function Input() {
       await uploadBytes(audioStorageRef, audioBlob).then((snapshot) => getDownloadURL(snapshot.ref)).then((downloadURL) => {
         messageData.audio = downloadURL;
       });
+    }
+
+    if (cameraCaptureData) {
+      messageData.img = cameraCaptureData; // Assuming cameraCaptureData holds the captured image or video URL
     }
 
     await updateDoc(doc(db, 'chats', data.chatId), { messages: arrayUnion(messageData) });
@@ -74,8 +82,10 @@ function Input() {
     });
 
     setText('');
-    setImg(null);
+    setImgFile(null);
     setRecordings([]);
+    // Reset camera capture data
+    setCameraCaptureData(null);
   };
 
   const record = async () => {
@@ -103,6 +113,37 @@ function Input() {
     setIsLoading(false);
   };
 
+  const handleCapture = (data) => {
+    if (data.startsWith('data:image')) {
+      // If it's an image, set it as the image file and URL state
+      setImgFile(data);
+      setImgUrl(data); // Update imgUrl to display the captured image
+      setCameraCaptureData(null); // Reset camera data
+    } else if (data.startsWith('data:video')) {
+      // If it's a video, send it as part of the message data
+      setCameraCaptureData(data);
+      setImgFile(null); // Reset image file data
+    } else {
+      // Handle other types of data, if needed
+    }
+    setShowCamera(false); // Close the camera
+  };
+  
+  
+  
+
+  const handleImgChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImgFile(file);
+        setImgUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="input">
       <input type="text" value={text} placeholder="Type something" onChange={(e) => setText(e.target.value)} onKeyDown={handleKey} />
@@ -124,7 +165,13 @@ function Input() {
             </li>
           ))}
         </ul>
-        <img className="button" onClick={handleSend} src={Send} alt="" />
+        {imgUrl && <img src={imgUrl} alt="Selected Image" />}
+ {/* Display the selected image */}
+        <img src={Img} alt="Camera Icon" className="camera-icon" onClick={() => setShowCamera(!showCamera)} />
+        <div className='camera-container'>
+          {showCamera && <CameraCapture onClose={() => setShowCamera(false)} onCapture={handleCapture} />}
+        </div>
+        <img className="button" onClick={handleSend} src={Send} alt="Send Message" />
       </div>
     </div>
   );

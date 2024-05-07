@@ -36,7 +36,7 @@ function AudioRecorder() {
       recorderNode.current = new AudioWorkletNode(audioContext.current, 'audioRecorderProcessor');
       recorderNode.current.port.onmessage = handleWorkletMessage;
       // Connect recorderNode to other nodes in your audio graph if needed
-      // audioSourceNode.connect(recorderNode);
+      audioSourceNode.connect(recorderNode);
     };
 
     initRecorder();
