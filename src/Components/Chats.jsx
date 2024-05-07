@@ -51,7 +51,7 @@ function Chats() {
     <div className="chats">
       {chats &&
         chats
-          .sort((a, b) => b.lastMessage.timestamp - a.lastMessage.timestamp) // Sort based on last message's timestamp
+          .sort((a, b) => b.date - a.date) // Sort based on last message's timestamp
           .map((chat) => (
             <div className="userChat" key={chat.chatId} onClick={() => handleSelect(chat.userInfo)}>
               <img src={chat.userInfo.photoURL} alt="" onClick={() => openModal(chat.userInfo.photoURL)} /> {/* Added onClick to open modal */}
@@ -62,9 +62,9 @@ function Chats() {
                 </div>
                 <div className="div2">
                   <span className="time">
-                    {new Intl.DateTimeFormat('en-IS', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' }).format(
-                      chat.lastMessage.timestamp
-                    )}
+                  {chat.lastMessage===undefined?"":
+                    new Intl.DateTimeFormat('en-IS', 
+                    { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' }).format(chat.lastMessage.timestamp)}
                   </span>
                   {chat.unread === 0 ? null : <p>{chat.unread}</p>}
                 </div>

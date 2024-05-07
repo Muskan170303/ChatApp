@@ -10,7 +10,7 @@ function Register() {
 
   const navigate=useNavigate();
   const [err,setErr] = useState(false);
-  const [currfile,setcurrfile]=useState(document.getElementById('file')?.files);
+  const [currfile,setcurrfile]=useState(null);
 
   const handleSubmit = async(e)=>{
     e.preventDefault();
@@ -60,11 +60,14 @@ function Register() {
                 <input type="text" placeholder='Display Name' />
                 <input type="email" placeholder='Email' />
                 <input type="password" placeholder='Password' />
-                <input style={{display:'none'}} type="file" id="file" />
+                <input style={{display:'none'}} type="file" id="file" onChange={e=>setcurrfile(e.target.files[0])} />
                 <label htmlFor="file">
                     <img src={AddAvatar} alt="" />
                     <span>Add an Avatar</span>
                 </label>
+                <div className='show'>
+                  {currfile? <img src={window.URL.createObjectURL(currfile)} alt="" /> :""} {currfile?.name}
+                </div>
                 {/* {<div id='upload'>No file uploaded right now!!</div>} */}
                 <button type='submit'>Sign up</button>
             </form>

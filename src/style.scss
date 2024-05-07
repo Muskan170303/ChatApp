@@ -77,6 +77,14 @@ $alt:#ddddf7;
                     width: 32px;
                 }
             }
+            .show{
+                display:flex;
+                align-items:center;
+                img{
+                    height:2rem;
+                    width:2rem;
+                }
+            }
             button{
                 background-color: $sec1;
                 color: white;

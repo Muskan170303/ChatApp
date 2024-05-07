@@ -6,7 +6,7 @@ import Rec from '../images/microphone.png'
 import Rec_red from '../images/rec_red.png'
 import { AuthContext } from '../Context/AuthContext';
 import { ChatContext } from '../Context/ChatContext';
-import { doc, arrayUnion, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, arrayUnion, serverTimestamp, updateDoc, increment } from 'firebase/firestore';
 import { v4 as uuid } from 'uuid';
 import { db, storage } from '../firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -70,7 +70,7 @@ function Input() {
     await updateDoc(doc(db, 'userChats', data.user.uid), {
       [`${data.chatId}.lastMessage`]: { text: text.trim() },
       [`${data.chatId}.date`]: serverTimestamp(),
-      [`${data.chatId}.unread`]: 1,
+      [`${data.chatId}.unread`]: increment(1),
     });
 
     setText('');
@@ -107,10 +107,9 @@ function Input() {
     <div className="input">
       <input type="text" value={text} placeholder="Type something" onChange={(e) => setText(e.target.value)} onKeyDown={handleKey} />
       <div className="send">
-        <img src={Img} alt="" />
         <input type="file" style={{ display: 'none' }} id="file" onChange={(e) => setImg(e.target.files[0])} />
         <label htmlFor="file">
-          <img src={Attach} alt="" />
+        <img src={Img} alt="" />
         </label>
         <button id="rec" onClick={record} style={{display:"none"}} disabled={isLoading}>
           
