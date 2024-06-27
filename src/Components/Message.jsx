@@ -34,7 +34,7 @@ function Message({message}) {
         {/* <span>{message.data?.toLocalTimeString("en-US")}</span> */}
       </div>
       <div className="messageContent">
-        <div>{message.img ? <img src={message.img} alt="Attached Image" /> : message.audio ? <audio src={message.audio} controls onClick={handlePlay}/> : message.text }<img className='arrow' src={Arrow} alt="" /></div>
+        <div>{message.img ? <Img mess={message} handleclick={handleclick} /> : message.audio ? <audio src={message.audio} controls onClick={handlePlay}/> : message.text }<img className='arrow' src={Arrow} alt="" /></div>
       </div>
       {selected && <ImageModal info={selected}  onClose={closeModal} />}
     </div>

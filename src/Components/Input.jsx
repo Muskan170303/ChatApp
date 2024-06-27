@@ -1,6 +1,6 @@
 import React, { useContext, useState, useRef } from 'react';
 import Img from '../images/img.png';
-import Attach from '../images/attach.png';
+import Camera from '../images/camera.png';
 import Send from '../images/plane.jpeg';
 import Rec from '../images/microphone.png'
 import Rec_red from '../images/rec_red.png'
@@ -148,7 +148,7 @@ function Input() {
     <div className="input">
       <input type="text" value={text} placeholder="Type something" onChange={(e) => setText(e.target.value)} onKeyDown={handleKey} />
       <div className="send">
-        <input type="file" style={{ display: 'none' }} id="file" onChange={(e) => setImg(e.target.files[0])} />
+        <input type="file" style={{ display: 'none' }} id="file" onChange={(e) => setImgFile(e.target.files[0])} />
         <label htmlFor="file">
         <img src={Img} alt="" />
         </label>
@@ -167,7 +167,7 @@ function Input() {
         </ul>
         {imgUrl && <img src={imgUrl} alt="Selected Image" />}
  {/* Display the selected image */}
-        <img src={Img} alt="Camera Icon" className="camera-icon" onClick={() => setShowCamera(!showCamera)} />
+        <img src={Camera} alt="Camera Icon" className="camera-icon" onClick={() => setShowCamera(!showCamera)} />
         <div className='camera-container'>
           {showCamera && <CameraCapture onClose={() => setShowCamera(false)} onCapture={handleCapture} />}
         </div>
