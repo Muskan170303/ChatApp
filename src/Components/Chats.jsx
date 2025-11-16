@@ -64,7 +64,7 @@ function Chats() {
                   <span className="time">
                   {chat.lastMessage===undefined?"":
                     new Intl.DateTimeFormat('en-US', 
-                    { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true }).format(chat.date.toDate())}
+                    { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: true }).format(chat.date ? chat.date.toDate() : new Date())}
                   </span>
                   {chat.unread === 0 ? null : <p>{chat.unread}</p>}
                 </div>
