@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import Img from '../images/img.png';
 import Camera from '../images/camera.png';
 import Send from '../images/plane.jpeg';
@@ -14,6 +14,7 @@ import vmsg from 'vmsg';
 import CameraCapture from './CameraCapture';
 
 function Input() {
+  const [messageType, setMessageType] = useState('TEXT'); // {'TEXT', 'IMAGE', 'IMAGE_WITH_TEXT', 'AUDIO', 'DOCUMENT'}
   const [text, setText] = useState('');
   const [imgFile, setImgFile] = useState(null); // State to hold the selected image file
   const [imgUrl, setImgUrl] = useState(null); // State to hold the image URL for display
@@ -27,6 +28,8 @@ function Input() {
   const recorderRef = useRef(new vmsg.Recorder({ wasmURL: 'https://unpkg.com/vmsg@0.3.0/vmsg.wasm' }));
   const [showCamera, setShowCamera] = useState(false); // State to manage camera open/close
   const [cameraCaptureData, setCameraCaptureData] = useState(null); // State to hold captured camera data
+  const [sendButton, setSendButton] = useState(false);
+  const [showSendOptions, setShowSendOptions] = useState(false);
 
   const handleKey = (e) => {
     if (e.code === 'Enter') {
@@ -83,9 +86,11 @@ function Input() {
 
     setText('');
     setImgFile(null);
+    setImgUrl(null);
     setRecordings([]);
     // Reset camera capture data
     setCameraCaptureData(null);
+    setSendButton(false);
   };
 
   const record = async () => {
@@ -96,6 +101,7 @@ function Input() {
         const blob = await recorderRef.current.stopRecording();
         setRecordings([URL.createObjectURL(blob)]);
         setIsRecording(false);
+          setSendButton(true);
       } catch (error) {
         console.error('Error stopping recording:', error);
       }
@@ -129,8 +135,31 @@ function Input() {
     setShowCamera(false); // Close the camera
   };
   
-  
-  
+  const toggleSendOptionPopup = () => {
+    setShowSendOptions(!showSendOptions);
+  };
+
+  // Close popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showSendOptions && !event.target.closest('.send-options')) {
+        setShowSendOptions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSendOptions]);
+
+  const checkInput = (value) => {
+    if(value.trim()!==''){
+      setSendButton(true);
+    }else{
+      setSendButton(false);
+    }
+  }
 
   const handleImgChange = (e) => {
     const file = e.target.files[0];
@@ -141,23 +170,42 @@ function Input() {
         setImgUrl(reader.result);
       };
       reader.readAsDataURL(file);
+      toggleSendOptionPopup();
+      setSendButton(true);
     }
   };
 
+  const clearRecording = () => {
+    setRecordings([]);
+    setSendButton(false);
+  }
+
   return (
     <div className="input">
-      <input type="text" value={text} placeholder="Type something" onChange={(e) => setText(e.target.value)} onKeyDown={handleKey} />
+      <div className="send-options" onClick={toggleSendOptionPopup}>
+        +
+        <div className="send-option-popup" style={{ display: showSendOptions ? 'block' : 'none' }}>
+          <div className="option" onClick={() => {toggleSendOptionPopup();return setShowCamera(true)}}>
+            <img src={Camera} alt="" /> Camera
+          </div>
+          <label className="option" htmlFor="image">
+            <img src={Img} alt="" /> Photo/Video
+          </label>
+          <input type="file" style={{ display: 'none' }} id="image" accept="image/*,video/*" onChange={handleImgChange} />
+
+          <label className="option" htmlFor="document">
+            <img src={Img} alt="" /> Document
+          </label>
+          <input type="file" style={{ display: 'none' }} id="document" onChange={handleImgChange} />
+        </div>
+      </div>
+      <input type="text" value={text} placeholder="Type something" onChange={(e) => {checkInput(e.target.value);return setText(e.target.value)}} onKeyDown={handleKey} />
       <div className="send">
-        <input type="file" style={{ display: 'none' }} id="file" onChange={(e) => setImgFile(e.target.files[0])} />
-        <label htmlFor="file">
-        <img src={Img} alt="" />
-        </label>
-        <button id="rec" onClick={record} style={{display:"none"}} disabled={isLoading}>
-          
-        </button>
-        <label htmlFor="rec">
+        <button id="rec" onClick={record} style={{display:"none"}} disabled={isLoading}></button>
+        <label htmlFor="rec" className={`${sendButton ? 'btn-hidden' : 'btn-visible'}`}>
         {isRecording ? <img src={Rec_red} alt="" /> : <img src={Rec} alt="" />}
         </label>
+        { recordings.length>0 && <span className="button" onClick={clearRecording}>X</span> }
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {recordings.map((url, index) => (
             <li key={index}>
@@ -165,13 +213,14 @@ function Input() {
             </li>
           ))}
         </ul>
+
         {imgUrl && <img src={imgUrl} alt="Selected Image" />}
  {/* Display the selected image */}
-        <img src={Camera} alt="Camera Icon" className="camera-icon" onClick={() => setShowCamera(!showCamera)} />
+        {/* <img src={Camera} alt="Camera Icon" className="camera-icon" onClick={() => setShowCamera(!showCamera)} />
         <div className='camera-container'>
           {showCamera && <CameraCapture onClose={() => setShowCamera(false)} onCapture={handleCapture} />}
-        </div>
-        <img className="button" onClick={handleSend} src={Send} alt="Send Message" />
+        </div> */}
+        <img className={`button ${sendButton ? 'btn-visible' : 'btn-hidden'}`} onClick={handleSend} src={Send} alt="Send Message" />
       </div>
     </div>
   );
