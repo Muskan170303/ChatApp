@@ -28,7 +28,7 @@ function Login() {
   return (
     <div className='formContainer'>
         <div className='formWrapper'>
-            <span className='logo'>Chat App</span>
+            <span className='logo'>Chattyz</span>
             <span className='title'>Login</span>
             <form onSubmit={handleSubmit}>
                 <input type="email" placeholder='Email' />
