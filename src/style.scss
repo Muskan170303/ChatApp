@@ -189,7 +189,7 @@ $alt:#ddddf7;
             }
             .chats{
                 overflow-y: scroll;
-                height: 85%;
+                height: calc(85% - 0.5rem);
                 &::-webkit-scrollbar{
                     width: .3rem;
                 }
