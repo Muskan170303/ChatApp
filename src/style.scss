@@ -187,20 +187,20 @@ $alt:#ddddf7;
                     color:white;
                 }
             }
-            // .chats{
-            //     overflow-y: scroll;
-            //     min-height: 80%;
-            //     &::-webkit-scrollbar{
-            //         width: .3rem;
-            //     }
-            //     &::-webkit-scrollbar-track{
-            //         background-color: $sec3;
-            //     }
-            //     &::-webkit-scrollbar-thumb{
-            //         background-color: $alt;
-            //         border-radius: 25px;
-            //     }
-            // }
+            .chats{
+                overflow-y: scroll;
+                height: 85%;
+                &::-webkit-scrollbar{
+                    width: .3rem;
+                }
+                &::-webkit-scrollbar-track{
+                    background-color: $pri3;
+                }
+                &::-webkit-scrollbar-thumb{
+                    background-color: $pri1;
+                    border-radius: 25px;
+                }
+            }
             .userChat{
                 padding:.5rem;
                 display: flex;
