@@ -13,7 +13,7 @@ function Navbar() {
   }
   return (
     <div className='navbar'>
-      <span className='logo'>Chat App</span>
+      <span className='logo'>Chattyz</span>
       <div className='user' onClick={handleclick}>
         <img src={currUser.photoURL} alt="" />
         <span>{currUser.displayName}</span>

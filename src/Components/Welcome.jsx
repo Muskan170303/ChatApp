@@ -4,7 +4,7 @@ function Welcome() {
   return (
     <div className='welcome'>
         <div className='welcomecontainer'>
-            Welcome to our chat app
+            Welcome to Chattyz
         </div>
     </div>
   )

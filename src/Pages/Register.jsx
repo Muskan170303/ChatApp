@@ -54,7 +54,7 @@ function Register() {
   return (
     <div className='formContainer'>
         <div className='formWrapper'>
-            <span className='logo'>Chat App</span>
+            <span className='logo'>Chattyz</span>
             <span className='title'>Register</span>
             <form onSubmit={handleSubmit}>
                 <input type="text" placeholder='Display Name' />
