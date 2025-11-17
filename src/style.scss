@@ -245,6 +245,16 @@ $alt:#ddddf7;
                             text-wrap:nowrap;
                             width: 20vw;
                         }
+                        img{
+                            height: 20px;
+                            width: 20px;
+                            border-radius: 0;
+                        }
+                        div{
+                            display: flex;
+                            gap: 5px;
+                            align-items: center;
+                        }
                     }
                     .div2{
                         align-items: flex-end;

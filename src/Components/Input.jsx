@@ -14,7 +14,7 @@ import vmsg from 'vmsg';
 import CameraCapture from './CameraCapture';
 
 function Input() {
-  const [messageType, setMessageType] = useState('TEXT'); // {'TEXT', 'IMAGE', 'IMAGE_WITH_TEXT', 'AUDIO', 'DOCUMENT'}
+  const [messageType, setMessageType] = useState('TEXT'); // {'TEXT', 'IMAGE', 'VIDEO', 'AUDIO', 'DOCUMENT'}
   const [text, setText] = useState('');
   const [imgFile, setImgFile] = useState(null); // State to hold the selected image file
   const [imgUrl, setImgUrl] = useState(null); // State to hold the image URL for display
@@ -74,12 +74,12 @@ function Input() {
     await updateDoc(doc(db, 'chats', data.chatId), { messages: arrayUnion(messageData) });
 
     await updateDoc(doc(db, 'userChats', currUser.uid), {
-      [`${data.chatId}.lastMessage`]: { text: text.trim() },
+      [`${data.chatId}.lastMessage`]: { text: text.trim() , messageType: messageType},
       [`${data.chatId}.date`]: serverTimestamp(),
     });
 
     await updateDoc(doc(db, 'userChats', data.user.uid), {
-      [`${data.chatId}.lastMessage`]: { text: text.trim() },
+      [`${data.chatId}.lastMessage`]: { text: text.trim() , messageType: messageType},
       [`${data.chatId}.date`]: serverTimestamp(),
       [`${data.chatId}.unread`]: increment(1),
     });
@@ -91,6 +91,7 @@ function Input() {
     // Reset camera capture data
     setCameraCaptureData(null);
     setSendButton(false);
+    setMessageType('TEXT');
   };
 
   const record = async () => {
@@ -101,7 +102,7 @@ function Input() {
         const blob = await recorderRef.current.stopRecording();
         setRecordings([URL.createObjectURL(blob)]);
         setIsRecording(false);
-          setSendButton(true);
+        setSendButton(true);
       } catch (error) {
         console.error('Error stopping recording:', error);
       }
@@ -111,6 +112,7 @@ function Input() {
         await recorderRef.current.initWorker();
         recorderRef.current.startRecording();
         setIsRecording(true);
+        setMessageType('AUDIO');
       } catch (error) {
         console.error('Error starting recording:', error);
       }
@@ -168,6 +170,7 @@ function Input() {
       reader.onloadend = () => {
         setImgFile(file);
         setImgUrl(reader.result);
+        setMessageType('IMAGE');
       };
       reader.readAsDataURL(file);
       toggleSendOptionPopup();
@@ -178,28 +181,36 @@ function Input() {
   const clearRecording = () => {
     setRecordings([]);
     setSendButton(false);
+    setMessageType('TEXT');
   }
 
   return (
     <div className="input">
-      <div className="send-options" onClick={toggleSendOptionPopup}>
-        +
-        <div className="send-option-popup" style={{ display: showSendOptions ? 'block' : 'none' }}>
-          <div className="option" onClick={() => {toggleSendOptionPopup();return setShowCamera(true)}}>
-            <img src={Camera} alt="" /> Camera
-          </div>
-          <label className="option" htmlFor="image">
-            <img src={Img} alt="" /> Photo/Video
-          </label>
-          <input type="file" style={{ display: 'none' }} id="image" accept="image/*,video/*" onChange={handleImgChange} />
+      {
+        messageType==='TEXT' ?
+        <div className="send-options" onClick={toggleSendOptionPopup}>
+          +
+          <div className="send-option-popup" style={{ display: showSendOptions ? 'block' : 'none' }}>
+            <div className="option" onClick={() => {toggleSendOptionPopup();return setShowCamera(true)}}>
+              <img src={Camera} alt="" /> Camera
+            </div>
+            <label className="option" htmlFor="image">
+              <img src={Img} alt="" /> Photo/Video
+            </label>
+            <input type="file" style={{ display: 'none' }} id="image" accept="image/*,video/*" onChange={handleImgChange} />
 
-          <label className="option" htmlFor="document">
-            <img src={Img} alt="" /> Document
-          </label>
-          <input type="file" style={{ display: 'none' }} id="document" onChange={handleImgChange} />
-        </div>
-      </div>
-      <input type="text" value={text} placeholder="Type something" onChange={(e) => {checkInput(e.target.value);return setText(e.target.value)}} onKeyDown={handleKey} />
+            <label className="option" htmlFor="document">
+              <img src={Img} alt="" /> Document
+            </label>
+            <input type="file" style={{ display: 'none' }} id="document" onChange={handleImgChange} />
+          </div>
+        </div> :
+        <div style={{padding: '0 5px'}}></div>
+      }
+      {
+        (messageType==='TEXT' || messageType==='IMAGE') &&
+        <input type="text" value={text} placeholder="Type something" onChange={(e) => {checkInput(e.target.value);return setText(e.target.value)}} onKeyDown={handleKey} />
+      }
       <div className="send">
         <button id="rec" onClick={record} style={{display:"none"}} disabled={isLoading}></button>
         <label htmlFor="rec" className={`${sendButton ? 'btn-hidden' : 'btn-visible'}`}>

@@ -4,6 +4,10 @@ import { AuthContext } from '../Context/AuthContext';
 import { ChatContext } from '../Context/ChatContext';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import Img from '../images/img.png';
+import Aud from '../images/microphone.png'
+import Vid from '../images/img.png';
+import Doc from '../images/img.png'
 
 function Chats() {
   const [chats, setChats] = useState([]);
@@ -58,7 +62,15 @@ function Chats() {
               <div className="userChatInfo">
                 <div className="div1">
                   <span>{chat.userInfo.displayName}</span>
-                  <p>{chat.lastMessage ? chat.lastMessage.text : ''}</p>
+                  <div>
+                    {
+                      chat.lastMessage && (
+                      chat.lastMessage.messageType === 'IMAGE' ? <><img src={Img} alt="Image" /><p>{chat.lastMessage ? chat.lastMessage.text : ''}</p></> :
+                      chat.lastMessage.messageType === 'AUDIO' ? <><img src={Aud} alt="Audio" /><p>Audio</p></> :
+                      chat.lastMessage.messageType === 'VIDEO' ? <><img src={Vid} alt="Video" /><p>Video</p></> :
+                      chat.lastMessage.messageType === 'DOCUMENT' ? <><img src={Doc} alt="Document" /><p>Document</p></> : '')
+                    }
+                  </div>
                 </div>
                 <div className="div2">
                   <span className="time">
